@@ -212,6 +212,7 @@ LUA_API int g_sp_read(lua_State* L)
 static luaL_Reg gsp[] = {
 	{"g_sp_open",g_sp_open},
 	{"g_sp_write",g_sp_write},
+	{"g_sp_read",g_sp_read},
 	{"g_sp_close",g_sp_close},
 	{"g_sp_set_baudrate",g_sp_set_baudrate},
 	{"g_sp_set_parity",g_sp_set_parity},
