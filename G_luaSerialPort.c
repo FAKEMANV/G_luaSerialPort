@@ -1,9 +1,9 @@
 ﻿// G_luaSerialPort.cpp: 定义应用程序的入口点。
 //
 
-#include "lua/lua.h"
-#include "lua/lualib.h"
-#include "lua/lauxlib.h"
+#include "lua/src/lua.h"
+#include "lua/src/lualib.h"
+#include "lua/src/lauxlib.h"
 #include "libserialport/libserialport.h"
 #include <stdlib.h>
 
@@ -70,7 +70,7 @@ LUA_API int g_sp_open(lua_State* L)
 
 LUA_API int g_sp_close(lua_State* L)
 {
-	printf("%s \n", __func__);
+	//printf("%s \n", __func__);
 	struct sp_port_fake* sp_port_fake_ = check_sp_port(L);
 	if (sp_port_fake_->sp_ != NULL)
 	{
@@ -140,7 +140,8 @@ LUA_API int g_sp_set_rts(lua_State* L)
 }
 LUA_API int g_sp_set_dtr(lua_State* L)
 {
-	struct sp_port* sp_port_ = check_sp_port(L);
+	struct sp_port_fake* sp_port_fake_ = check_sp_port(L);
+	struct sp_port* sp_port_ = sp_port_fake_->sp_;
 	int top_index = lua_gettop(L);
 	lua_Integer dtr = luaL_checkinteger(L, 2);
 
@@ -216,6 +217,18 @@ LUA_API int g_sp_read(lua_State* L)
 	return 1;
 }
 
+//
+LUA_API int g_sp_get_sp_port(lua_State* L)
+{
+	//printf("%s \n", __func__);
+	struct sp_port_fake* sp_port_fake_ = check_sp_port(L);
+	if (sp_port_fake_->sp_ != NULL)
+	{
+		lua_pushlightuserdata(L, sp_port_fake_->sp_);
+		return 1;
+	}
+	return 0;
+}
 static luaL_Reg gsp[] = {
 	{"__close",g_sp_close},
 	{"__gc",g_sp_close},
@@ -227,6 +240,7 @@ static luaL_Reg gsp[] = {
 	{"set_parity",g_sp_set_parity},
 	{"set_rts",g_sp_set_rts},
 	{"set_dtr",g_sp_set_dtr},
+	{"get",g_sp_get_sp_port},
 	{NULL,NULL}
 };
 static luaL_Reg reg[] = {

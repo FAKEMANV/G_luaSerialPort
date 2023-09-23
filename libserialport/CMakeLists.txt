@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-project ("libserialport" )
+project ("libserialport" LANGUAGES C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND src serialport.c; timing.c; libserialport_internal.h)
